@@ -14,9 +14,6 @@ class UserTableSeeder extends Seeder
 
         $faker = \Faker\Factory::create();
 
-        // Insert same password for every created user
-        $password = \Illuminate\Support\Facades\Hash::make('token');
-
         User::create([
             'name'     => 'admin',
             'username' => 'admin@admin.com',
