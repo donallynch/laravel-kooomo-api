@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Repository\CommentRepository;
 use App\Comment;
+use App\Http\Services\Authenticator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,14 +17,20 @@ class CommentController extends Controller
     /** @var CommentRepository $commentRepository */
     private $commentRepository;
 
+    /** @var Authenticator $authenticator */
+    private $authenticator;
+
     /**
      * CommentController constructor.
      * @param CommentRepository $commentRepository
+     * @param Authenticator $authenticator
      */
     public function __construct(
-        CommentRepository $commentRepository
+        CommentRepository $commentRepository,
+        Authenticator $authenticator
     ) {
         $this->commentRepository = $commentRepository;
+        $this->authenticator = $authenticator;
     }
 
     /**
@@ -33,14 +40,7 @@ class CommentController extends Controller
     public function get(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $commentId = $request->id;
@@ -73,7 +73,7 @@ class CommentController extends Controller
             $collection = $this->commentRepository->where([
                 'is_active' => 1,
                 'is_published' => 1,
-                'user_id' => $user->id
+                'user_id' => $user['id']
             ], [
                 'page' => $page
             ]);
@@ -100,14 +100,7 @@ class CommentController extends Controller
     public function post(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Validate request */
         $validation = $this->handleValidatePost($request);
@@ -121,7 +114,7 @@ class CommentController extends Controller
 
         /* perform create */
         $created = $this->commentRepository->create([
-            'user_id' => $user->id,//<-- Can only create their own Comment
+            'user_id' => $user['id'],
             'post_id' => $request->post_id,
             'content' => $request->content,
             'is_published' => $request->is_published
@@ -140,14 +133,7 @@ class CommentController extends Controller
     public function put(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Validate request */
         $validation = $this->handleValidatePut($request);
@@ -174,7 +160,7 @@ class CommentController extends Controller
         $entity = $entity[0];
 
         /* Ensure Comment.user can only update their own Posts */
-        if ((int)$user->id !== (int)$entity['user_id']) {
+        if ((int)$user['id'] !== (int)$entity['user_id']) {
             return response()->json([
                 'status' => 404,
                 'mesg' => 'comment-not-found'
@@ -184,7 +170,7 @@ class CommentController extends Controller
         /* Perofrm update */
         $updated = $this->commentRepository->update($request->id, [
             'is_active' => $request->is_active,
-            'user_id' => $user->id,
+            'user_id' => $user['id'],
             'content' => $request->content,
             'is_published' => $request->is_published
         ]);
@@ -249,29 +235,6 @@ class CommentController extends Controller
         ]);
         if ($validator->fails()) {
             return $validator->errors();
-        }
-
-        return true;
-    }
-
-    /**
-     * TODO:: AUTHENTICATION
-     *  I didn't have time to also implement authentication
-     *  through Oauth or basic token passing.
-     *  If I had more time, I would have sent an auth token with each request, like this:
-     *      'Authorization' => "Bearer ABCDEFG_faketoken_HIJKLMNOP",
-     *  For each protected route we query the token to check if it is valid and who owns it.
-     *  We can then consider the request authenticated (if the token is valid and identifies a specific User)
-     * @return bool|\Illuminate\Http\JsonResponse
-     */
-    private function handleAuthenticateUser()
-    {
-        $user = Auth::user();
-        if ($user === null) {
-//            return response()->json([
-//                'status' => 401,
-//                'mesg' => 'Unauthorised'
-//            ], 401);
         }
 
         return true;

@@ -20,8 +20,7 @@ class CreateUserTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
-            $table->string('password');
-            $table->tinyInteger('role')->default(0);
+            $table->string('token')->unique();
             $table->timestamps();
         });
     }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Repository\CommentRepository;
 use App\Http\Repository\PostRepository;
+use App\Http\Services\Authenticator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class PostController
@@ -19,17 +19,23 @@ class PostController extends Controller
     /** @var PostRepository $postRepository */
     private $postRepository;
 
+    /** @var Authenticator $authenticator */
+    private $authenticator;
+
     /**
      * PostController constructor.
      * @param CommentRepository $commentRepository
      * @param PostRepository $postRepository
+     * @param Authenticator $authenticator
      */
     public function __construct(
         CommentRepository $commentRepository,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        Authenticator $authenticator
     ) {
         $this->commentRepository = $commentRepository;
         $this->postRepository = $postRepository;
+        $this->authenticator = $authenticator;
     }
 
     /**
@@ -39,14 +45,7 @@ class PostController extends Controller
     public function get(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $postId = $request->id;
@@ -78,7 +77,7 @@ class PostController extends Controller
             $collection = $this->postRepository->where([
                 'is_active' => 1,
                 'is_published' => 1,
-                'user_id' => $user->id
+                'user_id' => $user['id']
             ]);
         } else {
             /* All posts */
@@ -104,14 +103,7 @@ class PostController extends Controller
     public function post(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Validate request */
         $validation = $this->handleValidatePost($request);
@@ -136,7 +128,7 @@ class PostController extends Controller
 
         /* perform create */
         $created = $this->postRepository->create([
-            'user_id' => $user->id,//<-- Can only create their own Posts
+            'user_id' => $user['id'],
             'title' => $request->title,
             'slug' => $request->slug,
             'content' => $request->content,
@@ -156,14 +148,7 @@ class PostController extends Controller
     public function put(Request $request)
     {
         /* Authenticate Request */
-        $auth = $this->handleAuthenticateUser();
-        if ($auth !== true) {
-            return $auth;
-        }
-
-        /* Mock User */
-        $user = new \stdClass();
-        $user->id = 1;
+        $user = $this->authenticator->handle($request);
 
         /* Validate request */
         $validation = $this->handleValidatePut($request);
@@ -185,7 +170,6 @@ class PostController extends Controller
                 'mesg' => 'post-not-found'
             ]);
         }
-        $entity = $entity;
 
         /* Ensure no other Post has same slug */
         $slug = $this->postRepository->where([
@@ -199,7 +183,7 @@ class PostController extends Controller
         }
 
         /* Ensure Users can only update their own Posts */
-        if ((int)$user->id !== (int)$entity[0]['user_id']) {
+        if ((int)$user['id'] !== (int)$entity[0]['user_id']) {
             return response()->json([
                 'status' => 404,
                 'mesg' => 'post-not-found'
@@ -209,7 +193,7 @@ class PostController extends Controller
         /* Perofrm update */
         $updated = $this->postRepository->update($request->id, [
             'is_active' => $request->is_active,
-            'user_id' => $user->id,
+            'user_id' => $user['id'],
             'title' => $request->title,
             'slug' => $request->slug,
             'content' => $request->content,
@@ -278,29 +262,6 @@ class PostController extends Controller
         ]);
         if ($validator->fails()) {
             return $validator->errors();
-        }
-
-        return true;
-    }
-
-    /**
-     * TODO:: AUTHENTICATION
-     *  I didn't have time to also implement authentication
-     *  through Oauth or basic token passing.
-     *  If I had more time, I would have sent an auth token with each request, like this:
-     *      'Authorization' => "Bearer ABCDEFG_faketoken_HIJKLMNOP",
-     *  For each protected route we query the token to check if it is valid and who owns it.
-     *  We can then consider the request authenticated (if the token is valid and identifies a specific User)
-     * @return bool|\Illuminate\Http\JsonResponse
-     */
-    private function handleAuthenticateUser()
-    {
-        $user = Auth::user();
-        if ($user === null) {
-//            return response()->json([
-//                'status' => 401,
-//                'mesg' => 'Unauthorised'
-//            ], 401);
         }
 
         return true;
