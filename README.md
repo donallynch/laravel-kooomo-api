@@ -4,7 +4,7 @@
 
 1. Git clone the project
 2. Run "composer install" to install all its dependencies
-3. Copy .env-example to a new file called .env and set DB credentials(Create a new DB)
+3. Copy .env.example to a new file called .env and set DB credentials(Create a new DB)
 4. Run "php artisan key:generate" in the console
 5. Run "php artisan migrate" in the console
 6. Run "php artisan passport:install" in the console
