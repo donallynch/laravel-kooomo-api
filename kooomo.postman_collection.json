@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "b3613dda-0a9e-4367-96a4-3b2621b30056",
+		"name": "kooomo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "API POST Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/post/post/?title=New Post 1&slug=J&content=The post content goes here...&is_published=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"post",
+						"post",
+						""
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "New Post 1"
+						},
+						{
+							"key": "slug",
+							"value": "J"
+						},
+						{
+							"key": "content",
+							"value": "The post content goes here..."
+						},
+						{
+							"key": "is_published",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API POST Put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/post/put/?title=New Post 19&slug=FFFFFFFFFF&content=The post content goes here...&is_published=0&id=19&is_active=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"post",
+						"put",
+						""
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "New Post 19"
+						},
+						{
+							"key": "slug",
+							"value": "FFFFFFFFFF"
+						},
+						{
+							"key": "content",
+							"value": "The post content goes here..."
+						},
+						{
+							"key": "is_published",
+							"value": "0"
+						},
+						{
+							"key": "id",
+							"value": "19"
+						},
+						{
+							"key": "is_active",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API POST Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/post/get",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"post",
+						"get"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "19",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API COMMENT POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/comment/post/?content=This is a comment&is_published=0&is_active=1&post_id=19",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"comment",
+						"post",
+						""
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "This is a comment"
+						},
+						{
+							"key": "is_published",
+							"value": "0"
+						},
+						{
+							"key": "is_active",
+							"value": "1"
+						},
+						{
+							"key": "post_id",
+							"value": "19"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API COMMENT PUT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/comment/put/?content=This is an updated comment&is_published=1&is_active=1&post_id=19&id=10",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"comment",
+						"put",
+						""
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "This is an updated comment"
+						},
+						{
+							"key": "is_published",
+							"value": "1"
+						},
+						{
+							"key": "is_active",
+							"value": "1"
+						},
+						{
+							"key": "post_id",
+							"value": "19"
+						},
+						{
+							"key": "id",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API COMMENT GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/comment/get?p=2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"comment",
+						"get"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "p",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

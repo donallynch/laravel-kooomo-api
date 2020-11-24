@@ -1,0 +1,266 @@
+{
+	"id": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+	"name": "backend-products",
+	"description": "",
+	"order": [
+		"8e28cbf5-482c-359a-79a4-fd5420f12b10",
+		"b55a08b9-09cd-9322-5f9c-b298a5fb2655",
+		"6be5a98c-3f9c-d405-af7a-3a7ba2f6f512",
+		"49c7e6fc-36a0-5ede-9bf0-56d105470748",
+		"4f1bead2-0813-90c7-62a8-d759cc1cd964"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1595509570568,
+	"owner": "2294480",
+	"public": false,
+	"requests": [
+		{
+			"id": "49c7e6fc-36a0-5ede-9bf0-56d105470748",
+			"headers": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY\nContent-Type: application/x-www-form-urlencoded\nAccept: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Accept",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://127.0.0.1:8000/api/product",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595793687940,
+			"name": "Get Products",
+			"description": "",
+			"collectionId": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+			"responses": []
+		},
+		{
+			"id": "4f1bead2-0813-90c7-62a8-d759cc1cd964",
+			"headers": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY\nContent-Type: application/x-www-form-urlencoded\nAccept: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Accept",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://127.0.0.1:8000/api/product/1",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595793710774,
+			"name": "Approve Product",
+			"description": "",
+			"collectionId": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+			"responses": []
+		},
+		{
+			"id": "6be5a98c-3f9c-d405-af7a-3a7ba2f6f512",
+			"headers": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY\nContent-Type: application/x-www-form-urlencoded\nAccept: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDU1OWYwNjBkM2MxY2U5ZmUwN2QxMTk3ZDMwM2I2MDBiYzEwYTlhZTFhZGJjNjY5OGNlZDdmNmRiMzZjZTg5ODMxMDcxMWQwYzgwNTdkMTciLCJpYXQiOjE1OTU3OTM1OTIsIm5iZiI6MTU5NTc5MzU5MiwiZXhwIjoxNjI3MzI5NTkyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.fvBkRsH1MXkz7-51WEBiiZZZtgvbzqXhMaVZX2fPgO1ARSFUAdeoiqP4aUc_d-zyn6KoFRQsEJp2aH0CJfIHqbASsm3rNfa3EYvaZVVBcUCnKgIDdvCv1Z4KUfmujhn18SVPqSvdq15yCWz3iISxzDAI15nhQW_LFzH2vcpbUe_1BsYIztr7s3Ye3RLjCmASPx7wS1bZvqE90Is9dNQEuuZpXwI4XNHhKuF0RvBgTOYyHAnEox0BKu2_mTEA011qpgNnM2zXHYqClaoZfXE8gUT2XtXpZyaW0fx8cRc6EqaG-9_5yp35_P5Beovj-7Dk6bIP4VIN2-ronawS2zbJ9E0BkYLazzE68JaB-VRZJ4ydPQ1jsA5A6-ON5TEAcVvZlCn9txpkpu7PQOfp5ARBwmrTioFiWr31gaj-FK-Ds-kPkDvYRERaLEKUp07KXrzvYaU6Le9UZPFTHLEAnyhnm0Jn_04GmteDr98MOTyjlfkfFlbvf5ToR20LBdiJaofvhRHmruxk-hK8x9b_Kugg7cLOXquC8A27xpSCrfe3Ml3aNW0Qg1x-SRKhAfi3SjRHdPFMgD7nSm3LcxUSs-n2PJ8puRrIDUuasbbE04VI5fPdw2w43ilxKo1fBZ2JQ--KjAlTmAH829ltTieTix1SKLSLCaqnpGX5PMy5wuD88jY",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Accept",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://127.0.0.1:8000/api/product",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "name",
+					"value": "Product Test",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "description",
+					"value": "Product description",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595793652191,
+			"name": "Create Product",
+			"description": "",
+			"collectionId": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+			"responses": []
+		},
+		{
+			"id": "8e28cbf5-482c-359a-79a4-fd5420f12b10",
+			"headers": "",
+			"headerData": [],
+			"url": "http://127.0.0.1:8000/api/user/register",
+			"queryParams": [
+				{
+					"key": "name",
+					"value": "vini",
+					"equals": true,
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "email",
+					"value": "mvmpvinicius@gmail.com",
+					"equals": true,
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "password",
+					"value": "password",
+					"equals": true,
+					"description": "",
+					"enabled": false
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "name",
+					"value": "User Test",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "email",
+					"value": "user_test@gmail.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "password",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "c_password",
+					"value": "password",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595793643042,
+			"name": "Register User",
+			"description": "",
+			"collectionId": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+			"responses": []
+		},
+		{
+			"id": "b55a08b9-09cd-9322-5f9c-b298a5fb2655",
+			"headers": "",
+			"headerData": [],
+			"url": "http://127.0.0.1:8000/api/user/login",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "email",
+					"value": "admin@admin.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "password",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595793644748,
+			"name": "Login User",
+			"description": "",
+			"collectionId": "77d45de9-8b5f-be85-c53a-cfd245c340ca",
+			"responses": []
+		}
+	]
+}
