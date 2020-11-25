@@ -87,6 +87,18 @@ class PostRepository
     }
 
     /**
+     * @param int $id
+     * @return mixed
+     */
+    public function delete(int $id)
+    {
+        /* Soft delete only */
+        return $this->update($id, [
+            'is_active' => 0
+        ]);
+    }
+
+    /**
      * @param Post $post
      * @return Post
      */

@@ -19,12 +19,14 @@
 1. To get all comments for a given post: /api/comments/get/?post_id=19
 2. To get all comments: /api/comments/get
 3. To get one comment: /api/comment/get/?id=6
-4. Include a valid token to only return Comments belonging to the token owner.
+4. To delete comment: /api/comment/delete/?id=1
+5. Include a valid token to only return Comments belonging to the token owner.
 
 ### Posts Explained
 1. To get all Posts: /api/posts/get
 2. To get one Post: /api/post/get/?id=6
-3. Include a valid token to only return Posts belonging to the token owner.
+3. To delete comment: /api/post/delete/?id=1
+4. Include a valid token to only return Posts belonging to the token owner.
 
 ### GET /api/comments
 ```
@@ -46,6 +48,11 @@ http://127.0.0.1:8000/api/comment/post
 http://127.0.0.1:8000/api/comment/put
 ```
 
+### DELETE
+```
+http://127.0.0.1:8000/api/comment/delete
+```
+
 ### GET /api/posts
 ```
 http://127.0.0.1:8000/api/posts/get
@@ -64,6 +71,11 @@ http://127.0.0.1:8000/api/post/post
 ### PUT
 ```
 http://127.0.0.1:8000/api/post/put
+```
+
+### DELETE
+```
+http://127.0.0.1:8000/api/post/delete
 ```
 
 ### Author

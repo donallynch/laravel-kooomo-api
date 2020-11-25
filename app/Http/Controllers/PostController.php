@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Repository\CommentRepository;
 use App\Http\Repository\PostRepository;
 use App\Http\Services\Authenticator;
+use App\Http\Services\DataProtector;
 use Illuminate\Http\Request;
 
 /**
@@ -22,20 +23,26 @@ class PostController extends Controller
     /** @var Authenticator $authenticator */
     private $authenticator;
 
+    /** @var DataProtector $dataProtector */
+    private $dataProtector;
+
     /**
      * PostController constructor.
      * @param CommentRepository $commentRepository
      * @param PostRepository $postRepository
      * @param Authenticator $authenticator
+     * @param DataProtector $dataProtector
      */
     public function __construct(
         CommentRepository $commentRepository,
         PostRepository $postRepository,
-        Authenticator $authenticator
+        Authenticator $authenticator,
+        DataProtector $dataProtector
     ) {
         $this->commentRepository = $commentRepository;
         $this->postRepository = $postRepository;
         $this->authenticator = $authenticator;
+        $this->dataProtector = $dataProtector;
     }
 
     /**
@@ -165,14 +172,17 @@ class PostController extends Controller
             ]);
         }
 
-        /* perform create */
-        $created = $this->postRepository->create([
-            'user_id' => $user['id'],
+        /* Prepare data for insert */
+        $data = [
             'title' => $request->title,
             'slug' => $request->slug,
             'content' => $request->content,
             'is_published' => $request->is_published
-        ]);
+        ];
+        $data = $this->dataProtector->enforceOwnership($user, $data);
+
+        /* Perform insert */
+        $created = $this->postRepository->create($data);
 
         /* Respond */
         return response()->json([
@@ -215,6 +225,12 @@ class PostController extends Controller
             ]);
         }
 
+        /* Ensure User owns the entity */
+        $ownership = $this->dataProtector->handle($user, $entity[0]);
+        if (!$ownership) {
+            return $this->dataProtector->badOwnership();
+        }
+
         /* Ensure no other Post has same slug */
         $slug = $this->postRepository->where([
             'slug' => $request->slug
@@ -226,18 +242,8 @@ class PostController extends Controller
             ]);
         }
 
-        /* Ensure Users can only update their own Posts */
-        if ((int)$user['id'] !== (int)$entity[0]['user_id']) {
-            return response()->json([
-                'status' => 404,
-                'mesg' => 'post-not-found'
-            ]);
-        }
-
         /* Perofrm update */
         $updated = $this->postRepository->update($request->id, [
-            'is_active' => $request->is_active,
-            'user_id' => $user['id'],
             'title' => $request->title,
             'slug' => $request->slug,
             'content' => $request->content,
@@ -248,6 +254,62 @@ class PostController extends Controller
         return response()->json([
             'status' => 200,
             'updated' => $updated
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request)
+    {
+        /* Authenticate Request */
+        $user = $this->authenticator->handle($request);
+
+        /* Must be authorised/authenticated to continue */
+        if ($user === null) {
+            return $this->authenticator->notAuthenticated();
+        }
+
+        /* Determine get */
+        $id = $request->id;
+
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                'status' => 400,
+                'mesg' => 'bad-request',
+                'errors' => $validation
+            ]);
+        }
+
+        /* Retrieve specified Post; ensure it exists */
+        $collection = $this->postRepository->where([
+            'id' => $id
+        ]);
+
+        /* Ensure entity exists */
+        if (!count($collection) || !$collection[0]['is_active']) {
+            return response()->json([
+                'status' => 404,
+                'mesg' => 'post-not-found'
+            ]);
+        }
+
+        /* Data Protection (ensure ownership before read/write) */
+        $ownership = $this->dataProtector->handle($user, $collection[0]);
+        if (!$ownership) {
+            return $this->dataProtector->badOwnership();
+        }
+
+        /* Perform Delete operation */
+        $this->postRepository->delete($request->id);
+
+        /* Respond */
+        return response()->json([
+            'status' => 200,
+            'mesg' => 'post-deleted'
         ], 200);
     }
 

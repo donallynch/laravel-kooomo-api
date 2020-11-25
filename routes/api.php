@@ -26,11 +26,13 @@ Route::post('post/post', 'PostController@post');
 Route::put('post/put', 'PostController@put');
 Route::get('posts/get', 'PostController@getPosts');
 Route::get('post/get', 'PostController@getPost');
+Route::delete('post/delete', 'PostController@delete');
 
 Route::post('comment/post', 'CommentController@post');
 Route::put('comment/put', 'CommentController@put');
 Route::get('comments/get', 'CommentController@getComments');
 Route::get('comment/get', 'CommentController@getComment');
+Route::delete('comment/delete', 'CommentController@delete');
 
 //Route::middleware(['auth:api'])->group(function () {
 //    Route::get('comment', 'CommentController@get');

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Repository\CommentRepository;
-use App\Comment;
 use App\Http\Services\Authenticator;
+use App\Http\Services\DataProtector;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class CommentController
@@ -20,17 +19,23 @@ class CommentController extends Controller
     /** @var Authenticator $authenticator */
     private $authenticator;
 
+    /** @var DataProtector $dataProtector */
+    private $dataProtector;
+
     /**
      * CommentController constructor.
      * @param CommentRepository $commentRepository
      * @param Authenticator $authenticator
+     * @param DataProtector $dataProtector
      */
     public function __construct(
         CommentRepository $commentRepository,
-        Authenticator $authenticator
+        Authenticator $authenticator,
+        DataProtector $dataProtector
     ) {
         $this->commentRepository = $commentRepository;
         $this->authenticator = $authenticator;
+        $this->dataProtector = $dataProtector;
     }
 
     /**
@@ -152,13 +157,16 @@ class CommentController extends Controller
             ]);
         }
 
-        /* perform create */
-        $created = $this->commentRepository->create([
-            'user_id' => $user['id'],
+        /* Prepare data for insert */
+        $data = [
             'post_id' => $request->post_id,
             'content' => $request->content,
             'is_published' => $request->is_published
-        ]);
+        ];
+        $data = $this->dataProtector->enforceOwnership($user, $data);
+
+        /* Perform insert */
+        $created = $this->commentRepository->create($data);
 
         /* Respond */
         return response()->json([
@@ -203,20 +211,15 @@ class CommentController extends Controller
                 'mesg' => 'comment-not-found'
             ]);
         }
-        $entity = $entity[0];
 
-        /* Ensure Comment.user can only update their own Posts */
-        if ((int)$user['id'] !== (int)$entity['user_id']) {
-            return response()->json([
-                'status' => 404,
-                'mesg' => 'comment-not-found'
-            ]);
+        /* Ensure User owns the entity */
+        $ownership = $this->dataProtector->handle($user, $entity[0]);
+        if (!$ownership) {
+            return $this->dataProtector->badOwnership();
         }
 
-        /* Perofrm update */
+        /* Perform update */
         $updated = $this->commentRepository->update($request->id, [
-            'is_active' => $request->is_active,
-            'user_id' => $user['id'],
             'content' => $request->content,
             'is_published' => $request->is_published
         ]);
@@ -225,6 +228,62 @@ class CommentController extends Controller
         return response()->json([
             'status' => 200,
             'updated' => $updated
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request)
+    {
+        /* Authenticate Request */
+        $user = $this->authenticator->handle($request);
+
+        /* Must be authorised/authenticated to continue */
+        if ($user === null) {
+            return $this->authenticator->notAuthenticated();
+        }
+
+        /* Determine get */
+        $id = $request->id;
+
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                'status' => 400,
+                'mesg' => 'bad-request',
+                'errors' => $validation
+            ]);
+        }
+
+        /* Retrieve specified Comment; ensure it exists */
+        $collection = $this->commentRepository->where([
+            'id' => $id
+        ]);
+
+        /* Ensure entity exists */
+        if (!count($collection) || !$collection[0]['is_active']) {
+            return response()->json([
+                'status' => 404,
+                'mesg' => 'comment-not-found'
+            ]);
+        }
+
+        /* Data Protection (ensure ownership before read/write) */
+        $ownership = $this->dataProtector->handle($user, $collection[0]);
+        if (!$ownership) {
+            return $this->dataProtector->badOwnership();
+        }
+
+        /* Perform Delete operation */
+        $this->commentRepository->delete($request->id);
+
+        /* Respond */
+        return response()->json([
+            'status' => 200,
+            'mesg' => 'comment-deleted'
         ], 200);
     }
 
