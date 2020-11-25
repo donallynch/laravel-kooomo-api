@@ -139,6 +139,11 @@ class PostController extends Controller
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
+        /* Must be authorised/authenticated to continue */
+        if ($user === null) {
+            return $this->authenticator->notAuthenticated();
+        }
+
         /* Validate request */
         $validation = $this->handleValidatePost($request);
         if ($validation !== true) {
@@ -183,6 +188,11 @@ class PostController extends Controller
     {
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
+
+        /* Must be authorised/authenticated to continue */
+        if ($user === null) {
+            return $this->authenticator->notAuthenticated();
+        }
 
         /* Validate request */
         $validation = $this->handleValidatePut($request);
