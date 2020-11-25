@@ -24,11 +24,13 @@ Route::get('test', 'TestController@index');
 
 Route::post('post/post', 'PostController@post');
 Route::put('post/put', 'PostController@put');
-Route::get('post/get', 'PostController@get');
+Route::get('posts/get', 'PostController@getPosts');
+Route::get('post/get', 'PostController@getPost');
 
 Route::post('comment/post', 'CommentController@post');
 Route::put('comment/put', 'CommentController@put');
-Route::get('comment/get', 'CommentController@get');
+Route::get('comments/get', 'CommentController@getComments');
+Route::get('comment/get', 'CommentController@getComment');
 
 //Route::middleware(['auth:api'])->group(function () {
 //    Route::get('comment', 'CommentController@get');

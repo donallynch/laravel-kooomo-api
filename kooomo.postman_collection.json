@@ -11,7 +11,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1/api/post/post/?title=New Post 1&slug=sdf-123&content=The post content goes here...&is_published=0&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"raw": "http://127.0.0.1/api/post/post/?title=New Post 1&slug=sdf-123456-duplicate-slug&content=The post content goes here...&is_published=1&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -32,7 +32,7 @@
 						},
 						{
 							"key": "slug",
-							"value": "sdf-123"
+							"value": "sdf-123456-duplicate-slug"
 						},
 						{
 							"key": "content",
@@ -40,7 +40,7 @@
 						},
 						{
 							"key": "is_published",
-							"value": "0"
+							"value": "1"
 						},
 						{
 							"key": "token",
@@ -57,7 +57,7 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1/api/post/put/?title=New Post 19&slug=FFFFFFFFFF&content=The post content goes here...&is_published=0&id=19&is_active=1&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"raw": "http://127.0.0.1/api/post/put/?title=New Post 19&slug=FFFFFFFFFF&content=The post content goes here...&is_published=1&id=19&is_active=1&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -86,7 +86,7 @@
 						},
 						{
 							"key": "is_published",
-							"value": "0"
+							"value": "1"
 						},
 						{
 							"key": "id",
@@ -111,7 +111,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1/api/post/get?token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"raw": "http://127.0.0.1/api/post/get?id=19&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -126,15 +126,38 @@
 					],
 					"query": [
 						{
-							"key": "user_id",
-							"value": "1",
-							"disabled": true
+							"key": "id",
+							"value": "19"
 						},
 						{
-							"key": "id",
-							"value": "19",
-							"disabled": true
-						},
+							"key": "token",
+							"value": "AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API POSTS Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/posts/get?token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"posts",
+						"get"
+					],
+					"query": [
 						{
 							"key": "token",
 							"value": "AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF"
@@ -196,7 +219,7 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1/api/comment/put/?content=This is an updated comment again&is_published=1&is_active=1&post_id=19&id=10&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"raw": "http://127.0.0.1/api/comment/put/?content=This is an updated comment again&is_published=1&is_active=1&id=10&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -225,7 +248,8 @@
 						},
 						{
 							"key": "post_id",
-							"value": "19"
+							"value": "19",
+							"disabled": true
 						},
 						{
 							"key": "id",
@@ -246,7 +270,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1/api/comment/get?p=2&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"raw": "http://127.0.0.1/api/comment/get/?id=6&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -257,17 +281,47 @@
 					"path": [
 						"api",
 						"comment",
-						"get"
+						"get",
+						""
 					],
 					"query": [
 						{
 							"key": "id",
-							"value": "11",
-							"disabled": true
+							"value": "6"
 						},
 						{
-							"key": "p",
-							"value": "2"
+							"key": "token",
+							"value": "AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API COMMENTS GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1/api/comments/get/?post_id=19&token=AAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSDDDDFFFF",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"path": [
+						"api",
+						"comments",
+						"get",
+						""
+					],
+					"query": [
+						{
+							"key": "post_id",
+							"value": "19"
 						},
 						{
 							"key": "token",

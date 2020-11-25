@@ -37,13 +37,61 @@ class CommentController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request)
+    public function getComment(Request $request)
     {
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $commentId = $request->id;
+
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                'status' => 400,
+                'mesg' => 'bad-request',
+                'errors' => $validation
+            ]);
+        }
+
+        /* Prepare GET params */
+        $params = [
+            'id' => $commentId
+        ];
+        if ($user !== null) {
+            $params['user_id'] = $user['id'];
+        }
+
+        /* Retrieve specified Comment */
+        $collection = $this->commentRepository->where($params);
+
+        /* Ensure Comment exists */
+        if (!count($collection) || !$collection[0]['is_active']) {
+            return response()->json([
+                'status' => 404,
+                'mesg' => 'comment-not-found'
+            ]);
+        }
+
+        /* Respond */
+        return response()->json([
+            'status' => 200,
+            'comment' => $collection
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getComments(Request $request)
+    {
+        /* Authenticate Request */
+        $user = $this->authenticator->handle($request);
+
+        /* Determine get */
+        $postId = $request->id;
         $page = (int)$request->get('p', 1);
 
         /* Validate request */
@@ -56,39 +104,26 @@ class CommentController extends Controller
             ]);
         }
 
-        /* If retrieving specific comment */
-        if ($commentId !== null) {
-            $collection = $this->commentRepository->where([
-                'id' => $commentId
-            ]);
-
-            /* Ensure instance exists */
-            if (!count($collection) || !$collection[0]['is_active']) {
-                return response()->json([
-                    'status' => 404,
-                    'mesg' => 'comment-not-found'
-                ]);
-            }
-        } elseif ($user !== null) {
-            $collection = $this->commentRepository->where([
-                'is_active' => 1,
-                'is_published' => 1,
-                'user_id' => $user['id']
-            ], [
-                'page' => $page
-            ]);
-        } else {
-            /* All active published comments */
-            $collection = $this->commentRepository->where([
-                'is_active' => 1,
-                'is_published' => 1
-            ], [
-                'page' => $page
-            ]);
+        /* Prepare GET params */
+        $params = [
+            'is_active' => 1,
+            'is_published' => 1,
+        ];
+        if ($user !== null) {
+            $params['user_id'] = $user['id'];
         }
+        if ($postId !== null) {
+            $params['post_id'] = $postId;
+        }
+
+        /* Retrieve Comments collection */
+        $collection = $this->commentRepository->where($params, [
+            'page' => $page
+        ]);
 
         /* Respond */
         return response()->json([
+            'status' => 200,
             'comment' => $collection
         ], 200);
     }
@@ -122,6 +157,7 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
+            'status' => 201,
             'comment' => $created
         ], 201);
     }
@@ -177,6 +213,7 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
+            'status' => 200,
             'updated' => $updated
         ], 200);
     }

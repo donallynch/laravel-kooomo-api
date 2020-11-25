@@ -42,7 +42,7 @@ class PostController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request)
+    public function getPost(Request $request)
     {
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
@@ -60,30 +60,22 @@ class PostController extends Controller
             ]);
         }
 
-        /* If retrieving specific post */
-        if ($postId !== null) {
-            $collection = $this->postRepository->where([
-                'id' => $postId
-            ]);
+        /* Prepare GET params */
+        $params = [
+            'id' => $postId
+        ];
+        if ($user !== null) {
+            $params['user_id'] = $user['id'];
+        }
 
-            /* Ensure instance exists */
-            if (!count($collection) || !$collection[0]['is_active']) {
-                return response()->json([
-                    'status' => 404,
-                    'mesg' => 'post-not-found'
-                ]);
-            }
-        } elseif ($user !== null) {
-            $collection = $this->postRepository->where([
-                'is_active' => 1,
-                'is_published' => 1,
-                'user_id' => $user['id']
-            ]);
-        } else {
-            /* All posts */
-            $collection = $this->postRepository->where([
-                'is_active' => 1,
-                'is_published' => 1
+        /* Retrieve specified Post */
+        $collection = $this->postRepository->where($params);
+
+        /* Ensure instance exists */
+        if (!count($collection) || !$collection[0]['is_active']) {
+            return response()->json([
+                'status' => 404,
+                'mesg' => 'post-not-found'
             ]);
         }
 
@@ -92,7 +84,49 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
+            'status' => 200,
             'post' => $collection
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPosts(Request $request)
+    {
+        /* Authenticate Request */
+        $user = $this->authenticator->handle($request);
+
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                'status' => 400,
+                'mesg' => 'bad-request',
+                'errors' => $validation
+            ]);
+        }
+
+        /* Prepare GET params */
+        $params = [
+            'is_active' => 1,
+            'is_published' => 1,
+        ];
+        if ($user !== null) {
+            $params['user_id'] = $user['id'];
+        }
+
+        /* Retrieve Posts Collection */
+        $collection = $this->postRepository->where($params);
+
+        /* Decorate Collection */
+        $collection = $this->decorate($collection);
+
+        /* Respond */
+        return response()->json([
+            'status' => 200,
+            'posts' => $collection
         ], 200);
     }
 
@@ -202,6 +236,7 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
+            'status' => 200,
             'updated' => $updated
         ], 200);
     }
