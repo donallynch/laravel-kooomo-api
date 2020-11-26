@@ -7,6 +7,7 @@ use App\Http\Repository\PostRepository;
 use App\Http\Services\Authenticator;
 use App\Http\Services\DataProtector;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 /**
  * Class PostController
@@ -25,6 +26,26 @@ class PostController extends Controller
 
     /** @var DataProtector $dataProtector */
     private $dataProtector;
+
+    /* CONSTANTS */
+    const OK = 200;
+    const NOT_FOUND = 404;
+    const OK_CREATED = 201;
+    const BAD_REQUEST = 400;
+    const BAD_REQUEST_STRING = 'bad-request';
+    const NOT_FOUND_STRING = 'entity-not-found';
+    const DUPLICATE_SLUG = 'duplicate-slug';
+    const INVALID_SLUG = 'invalid-slug';
+    const STATUS = 'status';
+    const MESSAGE = 'mesg';
+    const PAYLOAD = 'payload';
+    const DELETED = 'deleted';
+    const ERRORS = 'errors';
+    const VAL_OPTIONAL_INT = 'integer|min:1';
+    const VAL_REQUIRED_INT = 'required|integer|min:1';
+    const VAL_REQUIRED_BOOL = 'required|boolean';
+    const VAL_CONTENT = 'required|max:255';
+    const VAL_TOKEN = 'min:40|max:40';
 
     /**
      * PostController constructor.
@@ -51,21 +72,21 @@ class PostController extends Controller
      */
     public function getPost(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $postId = $request->id;
-
-        /* Validate request */
-        $validation = $this->handleValidateGet($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
-        }
 
         /* Prepare GET params */
         $params = [
@@ -81,8 +102,8 @@ class PostController extends Controller
         /* Ensure instance exists */
         if (!count($collection) || !$collection[0]['is_active']) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'post-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
@@ -91,9 +112,9 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'post' => $collection
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $collection
+        ], self::OK);
     }
 
     /**
@@ -109,9 +130,9 @@ class PostController extends Controller
         $validation = $this->handleValidateGet($request);
         if ($validation !== true) {
             return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
             ]);
         }
 
@@ -132,9 +153,9 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'posts' => $collection
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $collection
+        ], self::OK);
     }
 
     /**
@@ -143,6 +164,16 @@ class PostController extends Controller
      */
     public function post(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidatePost($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
@@ -151,31 +182,32 @@ class PostController extends Controller
             return $this->authenticator->notAuthenticated();
         }
 
-        /* Validate request */
-        $validation = $this->handleValidatePost($request);
-        if ($validation !== true) {
+        /* Slugify the requested slug */
+        $postedSlug = Str::slug($request->slug, '-');
+
+        /* Ensure valid slug */
+        if (!strlen($postedSlug)) {
             return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::INVALID_SLUG
             ]);
         }
 
         /* Ensure slug is unique */
         $slug = $this->postRepository->where([
-            'slug' => $request->slug
+            'slug' => $postedSlug
         ]);
         if (count($slug)) {
             return response()->json([
-                'status' => 400,
-                'mesg' => 'duplicate-slug'
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::DUPLICATE_SLUG
             ]);
         }
 
         /* Prepare data for insert */
         $data = [
             'title' => $request->title,
-            'slug' => $request->slug,
+            'slug' => $postedSlug,
             'content' => $request->content,
             'is_published' => $request->is_published
         ];
@@ -186,8 +218,8 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
-            'post' => $created
-        ], 201);
+            self::PAYLOAD => $created
+        ], self::OK_CREATED);
     }
 
     /**
@@ -196,6 +228,16 @@ class PostController extends Controller
      */
     public function put(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidatePut($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
@@ -204,24 +246,14 @@ class PostController extends Controller
             return $this->authenticator->notAuthenticated();
         }
 
-        /* Validate request */
-        $validation = $this->handleValidatePut($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
-        }
-
         /* Retrieve specified entity */
         $entity = $this->postRepository->where(['id' => $request->id]);
 
         /* Ensure specified entity exists */
         if (!$entity) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'post-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
@@ -231,30 +263,41 @@ class PostController extends Controller
             return $this->dataProtector->badOwnership();
         }
 
+        /* Slugify the requested slug */
+        $postedSlug = Str::slug($request->slug, '-');
+
+        /* Ensure valid slug */
+        if (!strlen($postedSlug)) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::INVALID_SLUG
+            ]);
+        }
+
         /* Ensure no other Post has same slug */
         $slug = $this->postRepository->where([
-            'slug' => $request->slug
+            'slug' => $postedSlug
         ]);
         if ($slug && $entity[0]['id'] !== $slug[0]['id']) {
             return response()->json([
-                'status' => 400,
-                'mesg' => 'duplicate-slug'
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::DUPLICATE_SLUG
             ]);
         }
 
         /* Perofrm update */
         $updated = $this->postRepository->update($request->id, [
             'title' => $request->title,
-            'slug' => $request->slug,
+            'slug' => $postedSlug,
             'content' => $request->content,
             'is_published' => $request->is_published
         ]);
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'updated' => $updated
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $updated
+        ], self::OK);
     }
 
     /**
@@ -263,6 +306,16 @@ class PostController extends Controller
      */
     public function delete(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
@@ -274,16 +327,6 @@ class PostController extends Controller
         /* Determine get */
         $id = $request->id;
 
-        /* Validate request */
-        $validation = $this->handleValidateGet($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
-        }
-
         /* Retrieve specified Post; ensure it exists */
         $collection = $this->postRepository->where([
             'id' => $id
@@ -292,8 +335,8 @@ class PostController extends Controller
         /* Ensure entity exists */
         if (!count($collection) || !$collection[0]['is_active']) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'post-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
@@ -308,9 +351,9 @@ class PostController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'mesg' => 'post-deleted'
-        ], 200);
+            self::STATUS => self::OK,
+            self::MESSAGE => self::DELETED
+        ], self::OK);
     }
 
     /**
@@ -321,11 +364,11 @@ class PostController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'is_active' => 'boolean',
-            'title' => 'required|max:255',
-            'slug' => 'required|max:255',
-            'content' => 'required|max:255',
-            'is_published' => 'required|boolean'
+            'title' => self::VAL_CONTENT,
+            'slug' => self::VAL_CONTENT,
+            'content' => self::VAL_CONTENT,
+            'is_published' => self::VAL_REQUIRED_BOOL,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();
@@ -342,12 +385,12 @@ class PostController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'is_active' => 'boolean',
-            'title' => 'required|max:255',
-            'slug' => 'required|max:255',
-            'content' => 'required|max:255',
-            'is_published' => 'required|boolean',
-            'id' => 'required|integer|min:1'
+            'id' => self::VAL_REQUIRED_INT,
+            'title' => self::VAL_CONTENT,
+            'slug' => self::VAL_CONTENT,
+            'content' => self::VAL_CONTENT,
+            'is_published' => self::VAL_REQUIRED_BOOL,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();
@@ -364,8 +407,9 @@ class PostController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'id' => 'integer|min:1',
-            'user_id' => 'integer|min:1'
+            'id' => self::VAL_OPTIONAL_INT,
+            'user_id' => self::VAL_OPTIONAL_INT,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();

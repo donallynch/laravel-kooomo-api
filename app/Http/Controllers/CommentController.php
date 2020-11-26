@@ -22,6 +22,24 @@ class CommentController extends Controller
     /** @var DataProtector $dataProtector */
     private $dataProtector;
 
+    /* CONSTANTS */
+    const OK = 200;
+    const NOT_FOUND = 404;
+    const OK_CREATED = 201;
+    const BAD_REQUEST = 400;
+    const BAD_REQUEST_STRING = 'bad-request';
+    const NOT_FOUND_STRING = 'entity-not-found';
+    const STATUS = 'status';
+    const MESSAGE = 'mesg';
+    const PAYLOAD = 'payload';
+    const DELETED = 'deleted';
+    const ERRORS = 'errors';
+    const VAL_OPTIONAL_INT = 'integer|min:1';
+    const VAL_REQUIRED_INT = 'required|integer|min:1';
+    const VAL_REQUIRED_BOOL = 'required|boolean';
+    const VAL_CONTENT = 'required|max:255';
+    const VAL_TOKEN = 'min:40|max:40';
+
     /**
      * CommentController constructor.
      * @param CommentRepository $commentRepository
@@ -44,21 +62,21 @@ class CommentController extends Controller
      */
     public function getComment(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $commentId = $request->id;
-
-        /* Validate request */
-        $validation = $this->handleValidateGet($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
-        }
 
         /* Prepare GET params */
         $params = [
@@ -74,16 +92,16 @@ class CommentController extends Controller
         /* Ensure Comment exists */
         if (!count($collection) || !$collection[0]['is_active']) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'comment-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'comment' => $collection
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $collection
+        ], self::OK);
     }
 
     /**
@@ -92,22 +110,22 @@ class CommentController extends Controller
      */
     public function getComments(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidateGet($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Determine get */
         $postId = $request->id;
         $page = (int)$request->get('p', 1);
-
-        /* Validate request */
-        $validation = $this->handleValidateGet($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
-        }
 
         /* Prepare GET params */
         $params = [
@@ -128,9 +146,9 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'comment' => $collection
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $collection
+        ], self::OK);
     }
 
     /**
@@ -139,22 +157,22 @@ class CommentController extends Controller
      */
     public function post(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidatePost($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Must be authorised/authenticated to continue */
         if ($user === null) {
             return $this->authenticator->notAuthenticated();
-        }
-
-        /* Validate request */
-        $validation = $this->handleValidatePost($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
         }
 
         /* Prepare data for insert */
@@ -170,9 +188,9 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 201,
-            'comment' => $created
-        ], 201);
+            self::STATUS => self::OK_CREATED,
+            self::PAYLOAD => $created
+        ], self::OK_CREATED);
     }
 
     /**
@@ -181,22 +199,22 @@ class CommentController extends Controller
      */
     public function put(Request $request)
     {
+        /* Validate request */
+        $validation = $this->handleValidatePut($request);
+        if ($validation !== true) {
+            return response()->json([
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
+            ]);
+        }
+
         /* Authenticate Request */
         $user = $this->authenticator->handle($request);
 
         /* Must be authorised/authenticated to continue */
         if ($user === null) {
             return $this->authenticator->notAuthenticated();
-        }
-
-        /* Validate request */
-        $validation = $this->handleValidatePut($request);
-        if ($validation !== true) {
-            return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
-            ]);
         }
 
         /* Retrieve specified entity */
@@ -207,8 +225,8 @@ class CommentController extends Controller
         /* Ensure specified entity exists */
         if (!count($entity) || !$entity[0]['is_active']) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'comment-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
@@ -226,9 +244,9 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'updated' => $updated
-        ], 200);
+            self::STATUS => self::OK,
+            self::PAYLOAD => $updated
+        ], self::OK);
     }
 
     /**
@@ -252,9 +270,9 @@ class CommentController extends Controller
         $validation = $this->handleValidateGet($request);
         if ($validation !== true) {
             return response()->json([
-                'status' => 400,
-                'mesg' => 'bad-request',
-                'errors' => $validation
+                self::STATUS => self::BAD_REQUEST,
+                self::MESSAGE => self::BAD_REQUEST_STRING,
+                self::ERRORS => $validation
             ]);
         }
 
@@ -266,8 +284,8 @@ class CommentController extends Controller
         /* Ensure entity exists */
         if (!count($collection) || !$collection[0]['is_active']) {
             return response()->json([
-                'status' => 404,
-                'mesg' => 'comment-not-found'
+                self::STATUS => self::NOT_FOUND,
+                self::MESSAGE => self::NOT_FOUND_STRING
             ]);
         }
 
@@ -282,9 +300,9 @@ class CommentController extends Controller
 
         /* Respond */
         return response()->json([
-            'status' => 200,
-            'mesg' => 'comment-deleted'
-        ], 200);
+            self::STATUS => self::OK,
+            self::MESSAGE =>self::DELETED
+        ], self::OK);
     }
 
     /**
@@ -295,10 +313,10 @@ class CommentController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'post_id' => 'required|integer|min:1',
-            'is_active' => 'boolean',
-            'is_published' => 'required|boolean',
-            'content' => 'required|max:255'
+            'post_id' => self::VAL_REQUIRED_INT,
+            'is_published' => self::VAL_REQUIRED_BOOL,
+            'content' => self::VAL_CONTENT,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();
@@ -315,10 +333,10 @@ class CommentController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'id' => 'required|integer|min:1',
-            'is_active' => 'boolean',
-            'is_published' => 'required|boolean',
-            'content' => 'required|max:255'
+            'id' => self::VAL_REQUIRED_INT,
+            'is_published' => self::VAL_REQUIRED_BOOL,
+            'content' => self::VAL_CONTENT,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();
@@ -335,9 +353,10 @@ class CommentController extends Controller
     {
         /* Validate request */
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'id' => 'integer|min:1',
-            'user_id' => 'integer|min:1',
-            'post_id' => 'integer|min:1'
+            'id' => self::VAL_OPTIONAL_INT,
+            'user_id' => self::VAL_OPTIONAL_INT,
+            'post_id' => self::VAL_OPTIONAL_INT,
+            'token' => self::VAL_TOKEN
         ]);
         if ($validator->fails()) {
             return $validator->errors();
