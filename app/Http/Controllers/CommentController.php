@@ -125,8 +125,10 @@ class CommentController extends Controller
 
         /* Determine get */
         $postId = $request->id;
-        $page = (int)$request->get('p', 1);
 
+        /* Detect page in request */
+        $page = (int)$request->get('page', 1);
+        
         /* Prepare GET params */
         $params = [
             'is_active' => 1,

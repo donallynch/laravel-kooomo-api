@@ -136,6 +136,9 @@ class PostController extends Controller
             ]);
         }
 
+        /* Detect page in request */
+        $page = (int)$request->get('page', 1);
+
         /* Prepare GET params */
         $params = [
             'is_active' => 1,
@@ -146,7 +149,7 @@ class PostController extends Controller
         }
 
         /* Retrieve Posts Collection */
-        $collection = $this->postRepository->where($params);
+        $collection = $this->postRepository->where($params, ['page' => $page]);
 
         /* Decorate Collection */
         $collection = $this->decorate($collection);
